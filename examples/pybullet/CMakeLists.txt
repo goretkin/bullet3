@@ -15,8 +15,7 @@ ENDIF()
 
 ADD_DEFINITIONS(-DSTATIC_LINK_SPD_PLUGIN)
 
-SET(pybullet_SRCS
-	pybullet.c
+SET(pybullet_supporting_SRCS
 	../../examples/SharedMemory/plugins/stablePDPlugin/SpAlg.cpp
         ../../examples/SharedMemory/plugins/stablePDPlugin/SpAlg.h
         ../../examples/SharedMemory/plugins/stablePDPlugin/Shape.cpp
@@ -105,6 +104,11 @@ SET(pybullet_SRCS
 		../../examples/MultiThreading/b3ThreadSupportInterface.cpp
 		
 )
+
+SET(pybullet_SRCS
+		${pybullet_supporting_SRCS}
+		pybullet.c
+)
 IF(BUILD_PYBULLET_CLSOCKET)
  ADD_DEFINITIONS(-DBT_ENABLE_CLSOCKET)
 ENDIF(BUILD_PYBULLET_CLSOCKET)
@@ -162,6 +166,7 @@ IF(BUILD_PYBULLET_CLSOCKET)
 ENDIF()
 
 ADD_LIBRARY(pybullet SHARED ${pybullet_SRCS})
+ADD_LIBRARY(c_bullet SHARED ${pybullet_supporting_SRCS})
 
 SET_TARGET_PROPERTIES(pybullet PROPERTIES PREFIX "")
 SET_TARGET_PROPERTIES(pybullet PROPERTIES POSTFIX "")
@@ -170,6 +175,13 @@ SET_TARGET_PROPERTIES(pybullet PROPERTIES VERSION ${BULLET_VERSION})
 SET_TARGET_PROPERTIES(pybullet PROPERTIES SOVERSION ${BULLET_VERSION})
 SET_TARGET_PROPERTIES(pybullet PROPERTIES DEBUG_POSTFIX "_d")
 
+
+SET_TARGET_PROPERTIES(c_bullet PROPERTIES PREFIX "")
+SET_TARGET_PROPERTIES(c_bullet PROPERTIES POSTFIX "")
+
+SET_TARGET_PROPERTIES(c_bullet PROPERTIES VERSION ${BULLET_VERSION})
+SET_TARGET_PROPERTIES(c_bullet PROPERTIES SOVERSION ${BULLET_VERSION})
+SET_TARGET_PROPERTIES(c_bullet PROPERTIES DEBUG_POSTFIX "_d")
 
 IF(WIN32)
 	IF(BUILD_PYBULLET_ENET OR BUILD_PYBULLET_CLSOCKET)
@@ -186,6 +198,8 @@ ENDIF()
 
 
 TARGET_LINK_LIBRARIES(pybullet BulletExampleBrowserLib BulletFileLoader BulletWorldImporter BulletSoftBody BulletDynamics BulletCollision BulletInverseDynamicsUtils BulletInverseDynamics LinearMath OpenGLWindow gwen BussIK Bullet3Common)
+TARGET_LINK_LIBRARIES(c_bullet BulletExampleBrowserLib BulletFileLoader BulletWorldImporter BulletSoftBody BulletDynamics BulletCollision BulletInverseDynamicsUtils BulletInverseDynamics LinearMath OpenGLWindow gwen BussIK Bullet3Common)
+
 
 IF (WIN32)
   TARGET_LINK_LIBRARIES(pybullet ${PYTHON_LIBRARIES})
